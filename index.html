@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cristian Azevedo Besminoff — Currículo Interativo</title>
+    
+    <style>
+        :root {
+            --bg-primary: #0a0f1d;
+            --bg-secondary: #121b2e;
+            --bg-card: rgba(18, 27, 46, 0.85);
+            --border-color: rgba(56, 189, 248, 0.2);
+            --accent-primary: #38bdf8;
+            --accent-secondary: #818cf8;
+            --accent-glow: rgba(56, 189, 248, 0.15);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --border-color: rgba(14, 165, 233, 0.25);
+            --accent-primary: #0284c7;
+            --accent-secondary: #4f46e5;
+            --accent-glow: rgba(2, 132, 199, 0.1);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Top Bar & Theme Toggle */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: var(--bg-secondary);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            z-index: 1000;
+        }
+
+        .brand-logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-theme, .btn-print {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .btn-theme:hover, .btn-print:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        /* Container Principal */
+        .container {
+            max-width: 1100px;
+            margin: 100px auto 40px auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header / Perfil */
+        .profile-header {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-primary), var(--accent-secondary));
+        }
+
+        .profile-title h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.2rem;
+        }
+
+        .profile-title h2 {
+            font-size: 1.2rem;
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .contact-item span {
+            color: var(--accent-primary);
+            font-weight: bold;
+        }
+
+        .contact-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .contact-item a:hover {
+            color: var(--accent-primary);
+            text-decoration: underline;
+        }
+
+        .summary-text {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.2rem;
+        }
+
+        /* Seções Gerais */
+        section {
+            margin-top: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-main);
+        }
+
+        /* Competências Interativas (Cards expansíveis) */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .skill-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .skill-card:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 4px 16px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        .skill-title {
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-main);
+        }
+
+        .skill-desc {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, margin-top 0.3s ease;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .skill-card.active .skill-desc {
+            max-height: 150px;
+            margin-top: 0.8rem;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 0.8rem;
+        }
+
+        /* Experiências Dinâmicas (Cards) */
+        .experience-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+        }
+
+        .exp-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .exp-card:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .exp-company-role h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .exp-company-role h4 {
+            font-size: 0.95rem;
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin-top: 0.2rem;
+        }
+
+        .exp-meta {
+            text-align: right;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .exp-badge-current {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-primary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.3rem;
+        }
+
+        .exp-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), margin-top 0.3s ease;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .exp-card.active .exp-details {
+            max-height: 300px;
+            margin-top: 1rem;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 1rem;
+        }
+
+        .exp-toggle-hint {
+            font-size: 0.8rem;
+            color: var(--accent-secondary);
+            margin-top: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* Formação Acadêmica Grid */
+        .academic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .academic-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .academic-card h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .academic-card .institution {
+            color: var(--accent-primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .academic-card .status {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        /* Fluxograma Moderno (Rodapé) */
+        .timeline-flow-section {
+            margin-top: 4rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .timeline-flow-container {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin-top: 2rem;
+            gap: 1.5rem;
+        }
+
+        .timeline-flow-container::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            bottom: 20px;
+            left: 24px;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--accent-primary), var(--accent-secondary));
+        }
+
+        .flow-node {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            position: relative;
+            padding-left: 10px;
+        }
+
+        .flow-dot {
+            width: 30px;
+            height: 30px;
+            background: var(--bg-primary);
+            border: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            flex-shrink: 0;
+            font-size: 0.75rem;
+            color: var(--accent-primary);
+            box-shadow: 0 0 10px var(--accent-glow);
+            font-weight: bold;
+        }
+
+        .flow-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 1rem 1.25rem;
+            border-radius: 10px;
+            flex-grow: 1;
+            transition: var(--transition);
+        }
+
+        .flow-content:hover {
+            border-color: var(--accent-primary);
+            transform: translateX(4px);
+        }
+
+        .flow-date {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .flow-title {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .flow-company {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        /* Responsividade Print */
+        @media print {
+            .top-bar { display: none; }
+            body { background: #fff; color: #000; }
+            .profile-header, .exp-card, .academic-card, .timeline-flow-section, .skill-card {
+                border: 1px solid #ccc;
+                background: #fff;
+                box-shadow: none;
+            }
+            .exp-details, .skill-desc { max-height: none !important; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <!-- Top Navigation Bar -->
+    <div class="top-bar">
+        <div class="brand-logo">
+            ⚡ Cristian Besminoff
+        </div>
+        <div class="top-actions">
+            <button class="btn-theme" onclick="toggleTheme()" id="themeBtn">
+                <span id="themeIcon">☀️</span> <span id="themeText">Modo Claro</span>
+            </button>
+            <button class="btn-print" onclick="window.print()">
+                📥 Salvar PDF / Imprimir
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- Header / Perfil -->
+        <header class="profile-header">
+            <div class="profile-title">
+                <h1>Cristian Azevedo Besminoff</h1>
+                <h2>Técnico de Qualidade de Rede & Auditoria em Telecomunicações</h2>
+            </div>
+            
+            <div class="contact-grid">
+                <div class="contact-item"><span>📍</span> Canoas, Rio Grande do Sul</div>
+                <div class="contact-item"><span>📞</span> <a href="https://wa.me/5551989498171?text=Olá%20Cristian,%20vi%20seu%20currículo%20e%20gostaria%20de%20conversar." target="_blank" title="Chamar no WhatsApp">📞 (51) 98949-8171 (WhatsApp 💬)</a></div>
+                <div class="contact-item"><span>✉️</span> cristianbesminoff@gmail.com</div>
+                <div class="contact-item"><span>🚗</span> CNH B Definitiva</div>
+            </div>
+
+            <div class="summary-text">
+                Profissional especialista em auditoria de qualidade e infraestrutura de telecomunicações, unindo sólida vivência técnica em redes ópticas e metálicas com constante aprimoramento em <strong>Segurança da Informação</strong>. Atualmente em busca de novos desafios voltados a oportunidades de <strong>liderança técnica</strong> ou transição para projetos na área de <strong>cibersegurança</strong>, agregando valor com visão sistêmica, rigor analítico e foco em excelência operacional.
+            </div>
+        </header>
+
+        <!-- Competências Interativas (Clique para expandir) -->
+        <section>
+            <h3 class="section-title">⚡ Competências Técnicas & Comportamentais (Clique para detalhes)</h3>
+            <div class="skills-grid">
+                
+                <div class="skill-card" onclick="toggleSkill(this)">
+                    <div class="skill-title">💡 Pensamento Criativo & Resolução de Problemas <span>▼</span></div>
+                    <div class="skill-desc">Abordagem engenhosa e inovadora para solucionar cenários complexos em campo, transformando desafios técnicos em soluções eficientes e otimizadas.</div>
+                </div>
+
+                <div class="skill-card" onclick="toggleSkill(this)">
+                    <div class="skill-title">🔒 Segurança da Informação & Cibersegurança <span>▼</span></div>
+                    <div class="skill-desc">Estudo contínuo e aplicação de práticas voltadas à integridade, proteção de dados e governança de sistemas em ambientes tecnológicos.</div>
+                </div>
+
+                <div class="skill-card" onclick="toggleSkill(this)">
+                    <div class="skill-title">🔍 Auditoria e Qualidade de Rede <span>▼</span></div>
+                    <div class="skill-desc">Auditoria completa de processos, padrões técnicos, conformidade de entregas e garantia de performance e estabilidade em redes de telecom.</div>
+                </div>
+
+                <div class="skill-card" onclick="toggleSkill(this)">
+                    <div class="skill-title">🔌 Fibra Óptica & Redes GPON <span>▼</span></div>
+                    <div class="skill-desc">Manipulação de feixes ópticos, fusões, testes de atenuação, certificação de sinal e ativação de infraestruturas de alta velocidade.</div>
+                </div>
+
+                <div class="skill-card" onclick="toggleSkill(this)">
+                    <div class="skill-title">📡 Telecomunicações & Infraestrutura <span>▼</span></div>
+                    <div class="skill-desc">Ampla vivência em redes externas e internas, suporte preventivo e corretivo em centrais e linhas de transmissão.</div>
+                </div>
+
+                <div class="skill-card" onclick="toggleSkill(this)">
+                    <div class="skill-title">🛠️ Cabos Metálicos <span>▼</span></div>
+                    <div class="skill-desc">Especialização técnica consolidada em diagnóstico, localização e reparação de falhas físicas em redes de pares metálicos.</div>
+                </div>
+
+                <div class="skill-card" onclick="toggleSkill(this)">
+                    <div class="skill-title">🧗 Trabalho em Altura <span>▼</span></div>
+                    <div class="skill-desc">Capacitação certificada para execução segura de intervenções em postes e estruturas elevadas conforme normas regulamentadoras.</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Experiência Profissional Interativa -->
+        <section>
+            <h3 class="section-title">💼 Experiência Profissional (Clique para expandir)</h3>
+            <div class="experience-grid">
+                
+                <div class="exp-card active" onclick="toggleCard(this)">
+                    <div class="exp-header">
+                        <div class="exp-company-role">
+                            <h3>Técnico de Qualidade de Rede / Auditor</h3>
+                            <h4>Unifique Telecomunicações</h4>
+                            <span class="exp-badge-current">Emprego Atual</span>
+                        </div>
+                        <div class="exp-meta">
+                            <span>Novembro 2025 – Presente</span>
+                        </div>
+                    </div>
+                    <div class="exp-details">
+                        <p>Atuação como auditor de tudo o que envolve a qualidade em telecomunicações. Responsável pelo monitoramento, inspeções rigorosas e validação de entregas e padrões técnicos, assegurando estabilidade, conformidade e excelência nos serviços prestados.</p>
+                    </div>
+                    <div class="exp-toggle-hint">▼ Detalhes da função</div>
+                </div>
+
+                <div class="exp-card" onclick="toggleCard(this)">
+                    <div class="exp-header">
+                        <div class="exp-company-role">
+                            <h3>Agente de Soluções em Telecomunicações</h3>
+                            <h4>Telemont Engenharia de Telecomunicações</h4>
+                        </div>
+                        <div class="exp-meta">
+                            <span>Agosto 2022 – Novembro 2023</span>
+                        </div>
+                    </div>
+                    <div class="exp-details">
+                        <p>Responsável por instalações e manutenções especializadas nas redes ópticas da Vital. Foco na integridade dos enlaces de fibra, resolução de falhas complexas em campo e garantia de performance de transmissão.</p>
+                    </div>
+                    <div class="exp-toggle-hint">▼ Detalhes da função</div>
+                </div>
+
+                <div class="exp-card" onclick="toggleCard(this)">
+                    <div class="exp-header">
+                        <div class="exp-company-role">
+                            <h3>Operador Multifuncional</h3>
+                            <h4>Serede / AS (Porto Alegre, RS)</h4>
+                        </div>
+                        <div class="exp-meta">
+                            <span>Maio 2011 – Junho 2020</span>
+                        </div>
+                    </div>
+                    <div class="exp-details">
+                        <p>Execução de reparos e instalações de telefonia e internet. Especialização profunda em redes de cabos metálicos, cumprimento de metas operacionais e atendimento direto ao cliente com foco em resolução rápida de falhas.</p>
+                    </div>
+                    <div class="exp-toggle-hint">▼ Detalhes da função</div>
+                </div>
+
+                <div class="exp-card" onclick="toggleCard(this)">
+                    <div class="exp-header">
+                        <div class="exp-company-role">
+                            <h3>Instalador / Técnico de Campo</h3>
+                            <h4>CETP (Porto Alegre, RS)</h4>
+                        </div>
+                        <div class="exp-meta">
+                            <span>Atuação em Projetos GPON</span>
+                        </div>
+                    </div>
+                    <div class="exp-details">
+                        <p>Instalação e ativação de tecnologias avançadas de fibra óptica (GPON) para prestação de serviços de telecomunicações (Vivo), realizando fusões, testes de sinal e ativação de clientes de ponta a ponta.</p>
+                    </div>
+                    <div class="exp-toggle-hint">▼ Detalhes da função</div>
+                </div>
+
+                <div class="exp-card" onclick="toggleCard(this)">
+                    <div class="exp-header">
+                        <div class="exp-company-role">
+                            <h3>Cabista / Instalador</h3>
+                            <h4>J.A. Galvão Serviços & Alan Galvão (Canoas, RS)</h4>
+                        </div>
+                        <div class="exp-meta">
+                            <span>Setembro 2008 – Maio 2011</span>
+                        </div>
+                    </div>
+                    <div class="exp-details">
+                        <p>Manutenção preventiva e corretiva em redes telefônicas e metálicas, execução de serviços em altura e infraestrutura externa de redes de telecomunicações.</p>
+                    </div>
+                    <div class="exp-toggle-hint">▼ Detalhes da função</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Formação Acadêmica -->
+        <section>
+            <h3 class="section-title">🎓 Formação Acadêmica</h3>
+            <div class="academic-grid">
+                <div class="academic-card">
+                    <h3>Segurança da Informação</h3>
+                    <span class="institution">Cruzeiro do Sul Educacional</span>
+                    <span class="status">📚 Cursando (EaD)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fluxograma Cronológico de Experiências (Rodapé) -->
+        <section class="timeline-flow-section">
+            <h3 class="section-title">🗺️ Linha do Tempo & Fluxograma de Carreira</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Evolução cronológica da trajetória profissional e técnica:</p>
+            
+            <div class="timeline-flow-container">
+                
+                <div class="flow-node">
+                    <div class="flow-dot">1</div>
+                    <div class="flow-content">
+                        <div class="flow-date">2008 – 2011</div>
+                        <div class="flow-title">Instalador / Cabista</div>
+                        <div class="flow-company">Alan Galvão & J.A. Galvão (Canoas, RS)</div>
+                    </div>
+                </div>
+
+                <div class="flow-node">
+                    <div class="flow-dot">2</div>
+                    <div class="flow-content">
+                        <div class="flow-date">2011 – 2020</div>
+                        <div class="flow-title">Operador Multifuncional</div>
+                        <div class="flow-company">Serede / AS (Porto Alegre, RS)</div>
+                    </div>
+                </div>
+
+                <div class="flow-node">
+                    <div class="flow-dot">3</div>
+                    <div class="flow-content">
+                        <div class="flow-date">Fase Operacional Avançada</div>
+                        <div class="flow-title">Instalador Técnico GPON / Fibra Óptica</div>
+                        <div class="flow-company">CETP / Vivo</div>
+                    </div>
+                </div>
+
+                <div class="flow-node">
+                    <div class="flow-dot">4</div>
+                    <div class="flow-content">
+                        <div class="flow-date">08/2022 – 11/2023</div>
+                        <div class="flow-title">Agente de Soluções em Telecomunicações</div>
+                        <div class="flow-company">Telemont Engenharia (Redes Ópticas Vital)</div>
+                    </div>
+                </div>
+
+                <div class="flow-node">
+                    <div class="flow-dot">5</div>
+                    <div class="flow-content">
+                        <div class="flow-date">Novembro 2025 – Presente</div>
+                        <div class="flow-title">Técnico de Qualidade de Rede / Auditor</div>
+                        <div class="flow-company">Unifique Telecomunicações</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 Cristian Azevedo Besminoff • Desenvolvido com foco em alta performance e interatividade.</p>
+    </footer>
+
+    <!-- Scripts Interativos -->
+    <script>
+        function toggleCard(card) {
+            card.classList.toggle('active');
+        }
+
+        function toggleSkill(card) {
+            card.classList.toggle('active');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeIcon.innerText = '🌙';
+                themeText.innerText = 'Modo Escuro';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.innerText = '☀️';
+                themeText.innerText = 'Modo Claro';
+            }
+        }
+    </script>
+</body>
+</html>
